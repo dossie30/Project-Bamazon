@@ -1,0 +1,24 @@
+{
+  "name": "Project-Bamazon",
+  "version": "1.0.0",
+  "description": "Amazon-like storefront app using MySQL &amp; Node.js.",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dossie30/Project-Bamazon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dossie30/Project-Bamazon/issues"
+  },
+  "homepage": "https://github.com/dossie30/Project-Bamazon#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0",
+    "mysql": "^2.15.0"
+  }
+}
