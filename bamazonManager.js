@@ -48,6 +48,7 @@ function displayItems() {
       console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].price + " | " + res[i].stock_quantity);
     }
     console.log("-----------------------------------");
+    start();
   });
 }
 
@@ -58,6 +59,7 @@ function lowInventory() {
         console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].price + " | " + res[i].stock_quantity);
       }
       console.log("-----------------------------------");
+      start();
     });
 
 }
@@ -66,15 +68,14 @@ function addInventory() {
   var query = connection.query("SELECT * from products",
     function (err, res) {
       //displayItems();
-      for (var i = 0; i < res.length; i++) {
-        console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].price + " | " + res[i].stock_quantity);
-      }
-      console.log("-----------------------------------");
+      
+      
       inquirer
-        .prompt([{
+        .prompt([
+          {
             name: "add_more",
             type: "input",
-            message: "Add more?"
+            message: "Which product do you want to add?"
           },
           {
             name: "add_units",
@@ -93,20 +94,22 @@ function addInventory() {
           }
 
 
-          if (chosenItem.stock_quantity > parseInt(answer.add_units)) {
+          if (chosenItem.item_id == answer.add_more) {
             connection.query(
-              "UPDATE products SET ? WHERE ?", [{
-                  stock_quantity: (chosenItem.stock_quantity + answer.add_units)
+              "UPDATE products SET ? WHERE ?", [
+                {
+                  stock_quantity: (chosenItem.stock_quantity + parseInt(answer.add_units))
                 },
                 {
                   item_id: chosenItem.item_id
                 }
+                
               ],
-              function (error) {
+              function (error,res) {
                 if (error) throw err;
 
                 console.log("Successful Add!");
-                console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].price + " | " + res[i].stock_quantity);
+                console.log(res.affectedRows + " product inserted!\n");
                 start();
               }
             );
@@ -116,5 +119,51 @@ function addInventory() {
             start();
           }
         });
+    });
+}
+
+function addNewproduct() {
+  
+  inquirer
+    .prompt([
+      {
+        name: "product_name",
+        type: "input",
+        message: "What is the product you would like to add?"
+      },
+      {
+        name: "dept_name",
+        type: "input",
+        message: "What department would you like to place your product?"
+      },
+      {
+        name: "price",
+        type: "input",
+        message: "What would you like the price to be?",
+        
+      },
+      {
+        name: "stock_quantity",
+        type: "input",
+        message: "How much do you want to add to inventory?"
+      }
+    ])
+    .then(function(answer) {
+      // when finished prompting, insert a new item into the db with that info
+      connection.query(
+        "INSERT INTO products SET ?",
+        {
+          product_name: answer.product_name,
+          dept_name: answer.dept_name,
+          price: answer.price,
+          stock_quantity: answer.stock_quantity
+        },
+        function(err) {
+          if (err) throw err;
+          console.log("Your product was created successfully!");
+          
+          start();
+        }
+      );
     });
 }
